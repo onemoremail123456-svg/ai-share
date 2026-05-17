@@ -1,0 +1,265 @@
+Okay, so finally hereby I begin with my description and like guidance throughout. The first and foremost thing that I would like to fix is see what functionality sort of thing that I want is like see the major and most important thing is what you need to do is properly first of all research and very well
+be aware of how the UI UX and the functionality of the light motion application has right like the ease of conveniency over Android application because that is the most accurate thing that I can find over internet that is matching my thought of ideation and all for this extension because that application already has ease of work. What I am doing is taking inspiration and redirecting it in my own way for my extension.
+so it needs to be done properly by I mean understood and then only be directed as per the extension and all so you need to do it the correct way I mean apart from what I directed that is the major thing okay here what I'm discussing is just a review edition and all like on a side note part right so you need to be very well aware of everything properly the first and foremost thing when I open the
+extension should be the correct name and that is correct that is touch tools on on top it's written as comp1 so that one that small comp1 like thin line comp1 can be removed like that's okay okay keep it keep it but the thing is that it should be impactful either not just for the sake of saying but when I select the composition then it should be impactful like if I change it to comp2 or comp3 then in center itself like
+where the touch tools area itself in the text tools bar itself where it's written in a thin line like currently my comp1 is active so that is how it's being written so that is what I'm referring to like where the signal is being shown like it's connected like green red and yellow dot in that area itself like comp1 is written so that should be in respect and properly sync with other like like if I do changes in the comp or like whatever addition I
+it should be with respect to it it should be with respect to it then only it would be beneficial and helpful right otherwise what's the benefit then here's the like signal and all so instead of a connected return like instead of something written the dot is sufficient enough like you can just make it convenient to just the dot thing like that dot should be functional
+itself as it is the only thing to be fixed or removed particularly is the AE connected that is getting written or whatever it is because it's not needed because we can already identify whether it's connected disconnected or is pending to be connected by the color of the dot so that is also like to be fixed the settings of the UI layout is appropriate enough as far by far as I can see observe so that doesn't need to be changed or something launch AE button should be removed
+so that will be fixed either way like launch AE needs to be absolutely removed because it's not needed obviously someone who is using this tool would have already started the after effects and then only switch to browser right so that is the actual logical sense I hope yeah but there could be the question mark icon where it will be like guidance on guidance and all things so you can keep it like that like you can
+give it give it give a give a question mark right there okay for convenience or you better just don't do anything right there the question mark icon would be on that bottom right on that area where the launch is AE is there that will be replaced with the undo and redo button so in that area the undo and redo button would come in okay properly like so the touch tool compound AE connected I mean AE connected won't be there but like that particular dot
+then the settings icon okay and then the settings icon okay and then after that undo and redo button so that would be way more convenient I hope by far
+this is the top part okay let me first of all just go through appropriately what else we can add up or remove let me just think about it
+anything else what we can add up I'm thinking what we can add up right now in there any more convenience thing yeah please add the option of like enabling grid no no no no not grid what we can opt for I'm thinking that itself like what else we can add up
+let me just take inspiration from a light motion application what we can do what we can do yeah by the way you can add the functionality or the feature of like comp want to be edited like we should be able to edit the comp name even so if we opt for it then there should be a pencil icon sort of you know you might be knowing like how I want it so do it in the correct way like direct in the correct way because this is the direction and the direction and the direction
+the direction and the direction and the direction and the direction and the direction and the direction and the direction and the direction and the direction and the direction so do it the correct way like how we can make it happen and all like every functionality and all should be functioning not just for the sake of saying I am describing in this much detail so that you can do it the functionality and the linking part to each other and all because you already have the essence of all the files right like you are very well aware of it that is why I am describing this much deep so you need to be very much very well aware about it
+the component like the name should be editable okay in the top in the center itself right like in the touch tools area itself whatever I discussed by far that is the thing and what else we can do on the top area itself let me think about it because by far the more accurate we think the more efficient it would be for your direction right to be done in the correct way Hey, yeah, I was thinking that what if like I just got an idea or like my thinking that what if we could add the like it would be just experimental it won't be live right away itself like I'm not describing that thing in much detail but like it could actually at least exist right like what I was thinking of that we can add a extension button not extension particularly but like
+what I can say is I'm thinking to describe the correct way like actually what I want is a functionality of like to control any of the existing extensions and all which are present in for After Effects that will be directly connected to the browser panel of mine like if there's motion tools okay not motion tools leave it but like
+any graph sort of adjustments thing okay so just in case if I want that that particular panel to be within control of the my panel right like of the web hosted version so my my is web hosted version but there the other tools might be within After Effects itself so could there be possibility that we could just use
+that thing with our web app or something or like any workaround by which not workaround or something but like any possibility of like of like of like of like
+of like of like of like of like what I was describing that we should have the ability to just like add up something something I mean the custom extensions or like plugins scripts that type of like it should be area of like what we can name it as is
+there should be a button actually like in front of the green dot itself I mean whatever the dot would be like that signal thing there would be like a button that is I'm trying to think name particularly of what it should be like
+like a button that is I'm trying to think name particularly of what it should be like you can rename it as X mode okay so that would be the name for that button so once that is clicked it would pop up different different options
+just like for script creation like not creation but like connecting the other panels and all and once it will be connected it will be on the console not console section yeah I will yeah it will be in the console section like once the console would be renamed as the X mode okay so X mode would be the X mode in the below layer like where layers transform effects shape
+camera text and console and console is there right at the last so that console would be connected with the X mode so the X mode would be connected to each other like there if I add something like any extension any plugin and script which might be already pre-built or by anything that is already included
+in after effects that will be made visible in our plugin okay I mean in our web app I hope that is possible because that is related to after effects itself and there could be a workaround or something that we can try out finding but this would be experimental so that's why I'm saying that it would be X mode so that just in case if something doesn't work then it doesn't at least bother the other thing which are already working so it should be in an
+experimental phase like that X mode that would be in front of the dot of the signal and all and the console would be renamed as X mode that would be in connection to the X mode on the top area which I described so that is what the functionality is then X mode would be having all experimental things like script add-on plugins extensions and all okay just like third party things other than the after effects
+like for the ease of convenience like for the ease of convenience like for the ease of convenience and all so that would be way more efficient and helpful either write it in such a way that it should be able to like don't utterly focus over it like because it's for now experimental like if it doesn't if it isn't possible either then also you can just direct in such a way that you can definitely go give it a shot like describing properly things but it's so
+it should not be at the initial preference it should not be at the initial preference itself it can be done but as it's functional I mean as it's experimental it will be focused but at a bit less level less level not to the most priority okay the main functionality that we need to revise are the things that I'll be describing further ahead so keep reading and keep understanding and be logical logically understand things...Now coming down to the layers part. Okay, it's very well, like, good way done. And, but, but, but, the thing is that the layers can be renamed to settings. Not settings, but like, I, I mean, what I can even describe for.
+Like, it can be renamed as, what I can think of, like, layers is not the thing, major thing. Or let it be. There's no problem with the name or something.
+But because the major thing that we are focusing is the functionality. So name for now doesn't matter. But we will definitely change it and make it something logically.
+So, if you can think of something logical then also you can suggest or like direct proper way. I mean, your work is that itself that you need to do it the correct way logically. So that way it would be. And so, you can proceed with it. And the layers part would be particularly changed and whatnot. Depends basically.
+Depends basically. So, the thing is that the layers. Wait a minute. Like, I'm thinking much more things like what are the things that you need to do. And all. I'll be informing further. Like, I'll be attaching and all.okay so now like moving on further I would like the functionality of like appropriate ability to add composition settings just like as you open a light motion application application so there's a option right like we can create project right away so instead of create project just like a light motion for after effects it would be create composition right
+because that is the canvas that will be generated and there we will be working out so initially itself like just before the layers thing layers is at appropriate place no doubt into it like let it be like the layers transform effects like there are even further ahead like different variations into it or like additions removal or whatever I'll be informing definitely but for now like I'm just for discussion part I'm just referring it as it is
+so just below the layers it would be compression settings not that layers then drop down menu and the refresh that would be just below the composition settings so composition settings and the layers section along with that of the layer options to be added that is to be revised and also I already was trying to describe the last time that these buttons like the solid text shape null
+can light this all are fine not a big deal or something but it should be like a button rather than a single triggering layer like currently what we do like if we click them then it directly adds up layer right but I want a functionality that it should be as a button the refresh would get extended obviously and other buttons would also be increased in size of it just for its proper adjustments because we will be removing the layers written right there
+that is not really needed right because we already are aware by the yellow colored theme layers transform effects already written above so that is also appropriate enough right now
+so layers which is written near to the drop down on the top left I mean the third third section in the left area to the to that of the drop down menu for selection of form that is to be removed like the layers to be removed because it's not needed all the time right so that would be the scene scenario and that will if that will be removed then other things will be adjusted accordingly so the refresh button would be just a symbol of like a circle
+and all so that people can be easily be aware so that will also be adjusted like a like to a square square box with a circle icon like a reverse icon okay so that will be refresh obviously and buttons can be properly done like solid the competition area should be properly done like for competition selection it will be just below the competition settings as we already discussed right now right like the competition first of all would be the touch tools obviously like
+where the connection and all would be shown like the dot and the ui layout after that comes the uh competition setting okay and after that it would come up like the refresh solid text and all okay and after that layers transform effects shapes like the console like the x mode area okay I hope you are very well aware of it and the revision that I want in the competition selection area
+like in that horizontal line panel or whatever section what I want is the buttons to be solid itself not a big deal not nothing like change big deal or something but it would have different functionality but just like to that of the light motion application I hope you understand what I mean like instead of solid it would be renamed as shape so that shape is particularly triggered so shape when that shape button is clicked
+it would pop up it would pop up more it would pop up more it would pop up more it would pop up more of the options just like the shape options just like the shape options okay by which no no no no you can do it like leave that thing like let the solid be solid but for the shape particular button like which is already accessing there right to that right to right of the text button so to right of the text button there is a shape button in there right in there there would be this functionality which I am describing the solid button would trigger the solid itself
+because that is the major composition setting thing right that we need to bring in so that is let it be don't fluctuate things into solid or don't rename it but there's already a shape button so that will be just after solid so first of all the refresh button would be there with a icon only there would be nothing written just the symbol of refresh okay in a square box then the solid button then the shape button then the text button and other else
+okay so this is how it would look like the center area like the middle part would be empty itself like no layers in composition and once the layer is added then it would detect it and like whatsoever like don't alter anything of below right now like the bottom or the middle or part or we currently just focus over what I'm describing so once the solid button and all will be properly done like readjusted as I described
+What I want the functionality to be is the refresh would react like a refresh itself. The solid would be solid itself. But from the shape on the shape would be as a button which when clicked would trigger multiple options of different shapes from where we can click and add custom already prebuilt just like a light motion application has right like the shape section which is like different different options.
+You might search thoroughly over the browser or the internet and get to know about what are the presets that it comes up with like the light motion application of Android in the shape section right. So just like that I want the functionality or the ability to be and it doesn't mean that it should be just for the sake of existence right there but it should also have the functionality right away itself in the same way. Okay.
+If we click our shape then we should be able to adjust it either not just for the sake of existence but we should be able to make it curve and all like through its adjustment properties that I'll be describing further but currently focus over the things that I am describing.
+Like if I click a solid layer then it would just for the sake of existence but that solid would also have features like we can adjust its properties we can adjust its gradient transparency shade. Okay. That type of feature should be there for proper adjustment then the solid layer might also have the ability of like different different things which are possible by far. Okay.
+So just how we can adjust in the light motion at the time of create project that type of possibility like no solid won't having such but like the composition setting should also work because currently the same scenario is the as soon as I click it like the preset already written like 1x1 4k.
+4k so these are not working I have to actually click apply settings then only it gets gets implemented
+But for the colors part colors are getting implemented right away
+Unfortunately, no. Yeah, yeah, the thing is that colors are getting implemented right away without much settings
+Without clicking the apply settings. That is what I mean in the competition settings
+that is what the same functionality I am looking forward for the
+settings of the resolution FPS
+Also and the duration to like add two duration options one would be
+Three actually three that would be like the template of preset that is five seconds for intro and logo 15 seconds for a bit short a teaser and a one
+15 and 30 and then one minute like 60 seconds. So four options would be there rather than three one would be five second would be
+15 third would be 30 and fourth would be one minute. So these are the things to be added up okay in accordance and
+9 is to 16 and this much is the initial thing by the way for the resolution part the 16 is to 9 9 is to 16 1 is to 1 is all fine. Okay?
+These are the aspect ratio so I would like to add up one more that is like 4 is to 5 okay 4 is to 5 and 4 is to 3 like two additions so the presets would be that for resolution would be 16 is to 9 9 is to 16 1 is to 1
+4:3 and 4:5 after that with a small divider sort of thing I don't know how it can be done and then after that after that divider there would be 2k and 4k option just like we do in after I mean a light motion right we can adjust its quality even through the presets so just like that I functionality want like if we want to edit in HD quality or like HD quality or like high quality just like that.
+like 2k 4k Ultra HD just like that functionality I want so you can either give a drop down menu of like adjustments of for such things that would be way more easy and really very efficient so yeah drop down itself would be very much efficient like if we want to set a square ratio and higher resolution at 4k at 8k like not 8k but yeah ability is possible but I don't want 8k but until
+4k like there should be 240p then 480p then 120p right just like that so doing the like the competition settings should have these features and the presets when clicked should be right away implemented just like the case of colors okay colors on colors are like the background thing is working really appropriate once the competition selected when I click any of the color it's directly getting implemented without clicking the apply settings
+that is what I want the functionality to functionality to be when I click the already pre-made presets of any ratio and once I set the resolution also like 4 240p 580p 540p 720p right like all the variations pre-sat up up to 4k just like a light motion in a drop down for a like quality enhancement and all so that initially people can adjust that and also for
+for the fps setting if you could just revise them like 12 fps then 24 fps then 30 fps then 30 fps 120 fps 60 fps just like that for duration also I already informed and that motion blur is there but not just motion blur but you can also add up a few more and also these all motion blur and all should have a bit bit properties adjustments if any user wants to okay then or then
+only it would be way more efficient right along with motion blur what are the things that I would like is shy button okay like the motion blur is there I agree that is appropriate helpful but there are like in the after effects actually there are more options right other than that limitation that is shy buttons then the collapse transformation or like for vector layer for clarity right so that that
+ability to just be able to just be toggled and activated right so that should be implemented directly okay this all should be having a quick quick implementation just like the colors and the resolution presets that I discussed for the things that will be adjusted through like numbering adjustments or like return of things for that the apply settings would be implemented otherwise it would get implemented directly through the presets
+I hope it's clear by far I hope it's clear by far I hope it's clear by far what I'm trying to convey so the things to be added in the motion blur area is the clarity the shy layer thing like the shy option for layers and then the layer vector options like continuous rasterize and then quality and sampling and then effects effects of all effects right that thing then the frame blending motion blur
+is already there is already there so it needs to be like a toggle okay yeah at least make it like a toggle okay yeah at least make it like a toggle so that and also it should be also having the feature for all the layers like whatever layer I'll be adding up like motion blur you can keep it like first of all understand what I'm trying to convey like what I want is yeah so it's better that we keep it in option for layers so this all should be there like the shy then the rest continuous raster
+and the quality and the quality and the effects turn off like whatever it is then the frame blending then the frame blending then the motion blur then the adjustment layer effects then the 3d layer this all should be within the layer itself just like I added up a solid layer so I'm not seeing you to alter anything that is AV written or like cut option or like split option or like duplicate or delete I'm not seeing you to alter any of the layer option
+right now which is currently efficient what I want they are on right side right of the layer of the layer box that appears when we click or add a player but what I am trying to describe is it should be on the left side itself like if you want to toggle the shy or other things like up to 3d layer whatever I described right so that we are very well aware of like what is the possibility and what we are doing even right in that sense it would be way
+easier for us to navigate through here by itself and that would be way more efficient if there could be ability like here I can observe that the solid like one written and solid is written like when I click a layer like solid I click then it adds up layer so once it's added up it's written as like in a box one solid so before that one can we add up a eye icon which will trigger the hidden
+possibility to hide layers like two buttons like two buttons like two buttons like for hiding or muting the layer particularly okay that would be way more efficient if it's possible by any sense okay and that will be helpful and the other things that I described that is the shy the continuous rasterize and other other things up to 3d layer should also have the ability
+of existence just after the ability of existence just after the name of the layer just like here solid is written right after the solid just like in after effects we have a bit spacing and then these options are there right like for shy then ipex and then continuous rasterize and until the 3d layer that all should be in small small like appropriate sized boxes for its adjustment like when when a person wants to trigger them and people can easily trigger it that way I hope that's clear
+and I am still not aware like what does the AV button do but if it's non-essential or it's not doing anything actually so you can remove that AV button that is in front of the cut or the split button okay that can be removed and also if I want to if I left click on it no yeah currently as it's open in the opened in a browser
+what's happening if I click right click then the browser option opens up but what I want the functionality to be when I click it like when I right click the layer then it should add more options just like copy layer duplicate layer right there itself so if it's possible then definitely go for it because I don't want to trigger the browser option because if we could add the in the browser option itself to
+like right click right click and trigger different more options then it would be way more efficient like from here itself we can then mute like mute option can be there itself rather than here in the layer itself like mute can be there duplicate layer can be there then cut can be there paste can be there copy properties can be there you know just like that like paste properties copy properties multiple things can be added up properly that is what I am looking for the functionality to be that would be just similar to after
+I mean a light motion application that I am trying to describe by far as far as much as possible so if that is possible then definitely go for it and direct it properly because based on that I am informing you further things more hey but listen listen I just got to see that there's on the bottom area there's a play pause button then a pass forward back forward and the arrow buttons are there right and the time duration is also there so that
+that is also to be revised that is to be just below the just below the composition area like we discussed right that the composition settings area and the current as of now the buttons like solid text shape null it will be revised though I will describe it even more further but for now like composition settings would move up a bit like as we already discussed and the part would be coming down so just before that and just below that
+the timeline would be the timeline would be the timeline would be the timeline would be the timeline would be there okay because that is also major part timeline in the sense like 0 0 to like whatever the duration the actual duration should be implemented in here itself and the timeline duration should be in proper respect with the actual timeline of the after effects which will be for the respective composition that will be created so in that sense it would be way more efficient and the playhead option should also be there like just like of the
+the light motion application like if we double tap that thing like if we double tap that thing like if we double tap that thing like the play pause not double tap but like if we click and hold the play pause button for more for three seconds then it should be converted not three seconds but like one two seconds like two no no no no if we click and hold that play pause button in the center just below the competition settings the solid layers and all would be added up after
+after that okay like the composition i mean the layer section would be there and after that come after that like see first of all touch tools the main thing then the layers transform and up to x mode after that the composition settings after that the area where we can select composition and other buttons would be there right like i described right now like a bit earlier and after that there would be the there would be there would have been
+the solids which when triggered when we click a solid button or like a text button right those layers are there but that i need to be revised before that i want to pin a section also along just just like the competition settings but this is for like playhead and the timeline thing like where the duration and the timings would be written properly so that people can easily put move the playhead and add keyframes just like the ability like how
+how we can add easily the timeline i mean drag throughout timeline with the playhead itself right in a light motion just like that functionality if it's possible it would be really great because then only we will be able to add keyframes add graph and all things right because then only we can split at particular point if we want to the preview would be definitely available over the after effects itself but at least we will be able to move here and there and
+just listen to just listen to things as per our desired duration where we want to so that is how it would work it would trigger the actual timeline itself okay.....Moving further ahead, like whatever I described by far is the thing that has to be implemented, like the timeline thing needs to be very well refined, okay?
+Just like the light motion application, please try to make it as a similar possibility, like as per the convenience, okay?
+Because it will be also either be adjusted for the RDP setup, so it should be clickable, like as per the fingertips and all, like Android touch screen.
+So it should be compatible for PC also and Android at the same time, so this is the major functionality to be focused, right?
+And it should be all logical, all interconnected properly, without any major mess or like dependency.
+It should be independent, like it should work effortlessly later on also if something is updated further, because we will be initially like upgrading the UI/UX frequently, right?
+Again in IP, so that is to be properly done the correct way.
+And the arrow part and all, okay?
+And do it the correct way, like the timeline what I described, like, and it will be always pinned, right?
+Just like it will be just below the composition selection, right?
+Like composition one settings and all, like where the buttons are there, refresh and all.
+So just below that, that timeline thing would be, like with the option of play/pause, that play/pause functionality is literally to be fixed.
+Because until now I am still unable to use it, not even a single time.
+So the play/pause and the fast forward, back forward, move forward, back forward, fast forward, like whatever the buttons are, it should be functional.
+And the undo/redo also at the same time.
+I mean, that were also not working, that's why I am mentioning it.
+The last time actually something like that happened, like, undo/redo was working, very, after very much working of me into it.
+But then unfortunately, the actual working itself of the whole panel itself got disrupted.
+So keep in mind to don't get it disrupted.
+If something like that happens, then definitely give it a shot.
+Like, direct in such a way that it should be all like properly researched and virtually fixed, okay?
+I am directing this much because I want accuracy.
+So please don't make me fail into my direction.
+I am trying my best.
+So these are the things by far.
+And that play/pause would be also working.
+Then, now moving further, I am describing few more, not few more, but like major, major things.
+That is to be literally focused more upon.
+So let me just describe it.
+Now I am moving on to layers particularly, precisely.
+Like how the single tap, how the touch and hold, how the double tap, everything I will be describing, okay?
+So just keep listening.
+I mean, reading out and understanding and logically planning things with the proper research and no syntax or no line error should be there.
+So just like direction for ideation of what things can be done or written or not and all for accuracy.........Okay, so now moving further, I'm gonna let you know about like the changes and all like the other stuff that I was about to discuss regarding the layers particularly like inspiration from a light motion as we discussed.
+So here it comes again like I'm gonna describe it. There are much more things that I'll be describing further and further.
+But first of all, see I might even opt out to just mention out a few features like I have actually opened the application itself right now.
+And I might need for a few like additions on your own logically. So do it the correct way and then and also the guidance part like the guidance like that interactive guidance sort of like.
+There are features in different different applications nowadays right or any sort of tool that is built that shows up the highlighted part in a particular area.
+And other part is dimmed. But that particular area is highlighted with a soft highlight like a blurred highlight which is particularly focusing on that part.
+So that you things can be written around that like how to add clips and how to remove how to use that feature and all what are the features included just like that type of panel in a premium sort of feel like a black dark theme itself.
+Could you just make it happen for like this tool itself like we discussed right that we will be adding the question mark icon.
+So there it can be just in case if possible like people can click and get started with like tutorial or like a bit like overview of the tool like what are the possibilities what are the features just in case if possible.
+Then it can be detailed but it is also not a priority just like the X mode this is also a least priority not too much priority right now itself but like it would be in the coming future.
+So it needs to be like I am just making you aware of it.
+By the way in the composition setting itself like in the composition settings where we have the option like right we click right the composition settings.
+So can't the composition settings react like a layer itself like not in the layer itself in the sense it would be paint itself but the thing that I am looking out for as we have the option.
+Like if we select any if any other layer is added up in a timeline okay like just below the just in the area where the layers are visible in after effects or with respect to after effects.
+So if I click solid then solid would be selected if I select text then text would be selected this is not the point that what I am referring to but the thing at the point is like whenever I select a particular layer or whoever over it then I get to see certainly the buttons right.
+Like button is respectfully coming up as soon as we hover the mouse or something like that onto the screen right.
+Like the cut button the duplicate button the X button appears up only when the layer when the mouse or the cursor goes over that layer.
+So just like that even though the composition would be pinned as we discussed initially it would be on its own place where I described actually but I also want it to have features just like yeah we can better add that features.
+You remember the motion blur and all stuff we discussed about like the shy layer up to until the 3D layer.
+So that things can be in the composition setting itself because it is the setting for the no no no no no no leave it leave it leave it leave it you do it the correct way itself.
+Composition settings would have different thing don't focus just now what I discussed like what I informed in this particular area because I don't want to mess up.
+The thing that I want to focus up is the additions of like a few more things that is in the composition setting just like the cut duplicate X but I don't want it for composition setting but I want it for different purpose.
+And the purpose would be like the addition of buttons just like the light motion application.
+How we can have how the light motion application has a functionality with a small frame icon and with it with with it there's a small arrow right that pops up the window in the latest version where we can adjust the size of the composition not size but the preview screen.
+Like how zoom in we want it to be or how zoom out we want it to be.
+So that type of capability like 100% 50% 25% 10% 5% 1% just like that.
+So it should be in that way in that sense.
+So that people can easily adjust the competition preview panel screen or auto adjustments like through sliding or something like that right.
+Just like a scroll or something like in that sense within that limit in that particular area.
+And then there should be like a camera camera camera only mode right.
+Like if we add camera layer then the elements which are connected to camera or elements which will be visible in the camera just like a light motion application.
+The things that will be limited to camera layer would be visible.
+So that type of functionality I want for After Effects composition settings to have.
+Like the first thing is composition scaling.
+Okay.
+Then the second thing is like camera camera toggle.
+Then the layer I don't know what type of feature is it in a light motion application.
+I do can see layer something is there but I don't know I'm really not aware much.
+But apart from that the major thing is grid.
+Grid is very much essential and helpful.
+So it should be a slider grid.
+You can take inspiration from a light motion application.
+How the slider works.
+Take inspiration from the light motion application please.
+Majorly.
+It has really very interactive and very easier to work with.
+So focus over it.
+We get a full screen tile based which covers up the full screen itself.
+Like the grid is not limited to one particular area.
+But it evenly divided in square boxes appropriately throughout the screen.
+Like wherever the composition area or outside of the composition area even.
+So that it covers up the most of the places.
+Like it is done in a very appropriate way.
+It's from 5 very least pixels.
+Like 5 pixels or I don't know what it being.
+200 to up to 500 value.
+Like very big.
+So in that sense I'm saying.
+Okay.
+So do this much also.
+Like whatever I described by far.
+Okay.
+Now I'm describing photo wait a minute.
+minute.The FPS resolution needs to be fixed right? Like I already directed. Now moving on further. Like it should be all functional. Every button that you will be adding up in this time should be properly functional. Okay. Now moving on ahead. I would like to define that. ..........okay so now moving on further ahead i would like you to like just inform or like keep you posted i mean moving further i would like you to just add a few more integration and like proper workspace sort of thing that is like the improvements basically which are as follows that is
+so
+so
+so
+so
+so
+so
+so
+so
+so
+so
+so
+so
+that is like before describing the layers part i would like to mention also the part that if something is getting out of frame
+or something like that then it should be scrollable at least okay not like that it's getting out of the way so it won't be appearing on the screen and all
+like it should be like currently the scene scenario is appropriate like very good okay like the frame adjustments as per the window which i open is good but
+but the part is like where layers transform effect shapes and all are there until console
+like the x mode that we discussed
+so x mode won't be visible because the screen that i will be working upon would be very small i mean probably very small if i would readjust or something like that so that would get out of the screen so it should be scrollable at least or there should be a button by which we can just click and see the other remaining options which are getting out of the frame or something like that like the window out of the browser window
+out of the browser window okay so that is to be kept in mind and all
+and so now moving on further i would like to mention that the transform section needs to be appropriately adjusted within the layers itself okay that is to be really very focused because i don't want it to be like i will select within the layers like i will select the layers
+i'll be selecting the layers then going to the transform section then going to the fx section the shapes the camera and all i mean cam for camera and all i can agree i'm i mean i can understand but like for no not even for camera because camera would be a layer and that would be like in the layers area itself right so camera settings would be within the camera layer itself just like how we would do do we would be doing for as per my direction for the layers that is as for the layers
+that is as follows like whenever i click a layer it should pop up options like move and transform color and fill edit text border and shadow presets and like for text layer i'm saying okay presets then blending and opacity and effects just like light motion application has then there should be a speed adjustments and the note i mean the audio button like audio for the layer
+like audio button like audio function button uh right in the layer itself like along with that uh cut duplicate and delete there should be two more buttons as might i might have described or i don't know but i repeat or something like that that there should be volume button and the speed button so the volume button would be consisting of like different different things but it doesn't matter mean that it
+it would be activated in the uh like text layer because text layer won't be having any audio or something like that right or even the speed it would be only nice no the speed can be there because uh in if we apply keyframes and all then obviously the motion would be there in the video i mean the text layer also either way so speed is fine but like the volume is not needed in the text layer i guess so that will be deactivated it would be logically done right
+and for the video and uh video and uh video layers and the audio layers that depends like there also we will have the audio adjustment like the volume button for now like casually and the speed button that should be properly given there okay with the inspiration and the possibility inspiration of a light motion but with the possibility of after effects like it should be having proper adjustments in the easiest possible way well researched okay that's why i'm describing this many things
+that's why i'm describing this many things also move and transform just doesn't mean that it would be adding a few options like rotations rescale or like screw or like movement and all it should be having all the features just like going back right like coming back to the this panel like on clicking double clicking actually on double clicking the layer like solid layer it would just open those panels which are
+color and color and color and color and transform like whatever i described and once that layer opens it would pop up like for example i'm giving the color option like color and fill description okay so if i click that then it should open up the options like just like the light motion application has
+which are the options which are the options of no media then color option like even if there's a video playing it would convert it into a solid color okay then the gradient even and then the actual video itself which can be either replaced if we click it okay so that type of possibility
+and just below that there should be option of 12-fit stretch like for the audio or the video like i mean the video
+then there should be border and strokes which should also have all the stroke border and the shadow options
+and it should be all adjustable it should be all precisely adjustable and the key frame able okay
+there should be all the possibilities now majorly focus here like it this this is the way it should
+be implemented okay like in all the layers there should be these options it is compulsory every
+layer should have this like either it being like it would be dependent upon the layer like text layers
+can't be having the audio feature and all so that will be deactivated logically but the things which
+are possible that needs to be added in accordance to the feature i am currently describing for move
+and transform but you take it for color and fill or whatever where keyframe is possible and all okay
+so there should be a back option so that people can click it and go back to the layers okay
+like redoing the double click just like that i mean by clicking the back and then like i'm currently
+describing the trackpad area which is see the trackpad area which is in the transform section is good
+but it can be refined either but it's already good but if refinement is possible then it could be good
+then there's option of xyz xy and z axis in the light motion application right so you need to take inspiration from there
+then there's a rotation option which is having a circular dial sort of right so that you need to understand and
+execute the correct way and xyz are all individual like it's not dependent upon each other it can be either linked or it can either be separated
+so that way you need to do it and the scale and scale i mean the height and width is also linkable but also having the feature of unlinked and adjusting in accordance to as a wish okay that took that to be kept in mind from you
+like you need to direct it uh i mean give the directions and planning and structure and in that sense that is what i mean and then like proper options should be there okay
+particular key framing and all and then like as we will be having the back option we will be also having at the same time the
+plus i mean the keyframe options like if we click on the keyframe button then it should
+add a keyframe in the layer right away itself and as we already discussed it already that we will be having the timeline visibility
+so there we would just scroll at the wherever place we want the timeline to be there and there we will we can
+easily add the keyframe and animate things properly right any of the property either it being color either it being
+motion or like whatever it could be either being effects everything should be compatible with it okay
+then just below the keyframes in the light motion application like addition and removal if we click the
+light motion applications uh plus button like whenever uh keyframe is not added if we click it it adds but at
+the same time whenever we move back to that keyframe then it gives the minus button also at the same time
+so that we can easily remove it so we are also aware that yeah it's above the keyframe so that functionality
+should also be there it should be all logical so that's why i'm saying that go through the working or the
+compatibility of light motion take inspiration and do it the adjustments as per the uh after effects
+like in a better way because after effects is advanced right
+now just below the keyframe button we can have the keyframe uh keyframe graph options which would be just
+like the bezier i mean not bezier or something but like it should be option like how the light motion
+applications graph uh is being there or like cap cuts graph you know in the android application just like
+that type of graph if it's possible then definitely give it a shot because that is way more convenient
+and it should be all functional not just for the sake of accessions but it should be working
+like it should work smoothly if we move it move the graph and it should be implemented on the layer either
+then there should be option of copy curve paste curve then paste curve to all keyframes no uh for all keyframes let it be for now
+but like invert option should also be there like for keyframes and uh enable overshoot okay
+this whole thing should be there in a proper button manner like as for possible do it logically so that it's easier for people to just
+make the best use out of it and not like complicated to use after too much scroll and clicks it should be way more easy okay
+it's there uh in this layer panel itself like when we double click there should be option of splitting
+like the light split or like like the right cut or like left cut or like split
+depends right then the blending and opacity should have all the options that is actually there in the light uh after effects
+or you can take inspiration from the light motion application itself and there should be mask option even
+other than the blending and opacity option like blending and opacity would be different button okay within the blending and opacity section
+blending options would be there in a within a single button
+and the mask option would be there within a single so masking would also be having mask options
+like add or subtract and at the same time grouping options
+if we want to make a pre-composition or like a group or something and that too should be also possible
+through that area okay that way even though light motion doesn't have this feature but i'm describing
+that way so make it happen then there should be effects section which we which i'll be describing further
+but until now you do this much like edit shape is also there so you need to be very well aware as per the shapes
+layers which will be adding and all so it it needs to be inspired through that way itself okay do it the
+correct way like i tried describing everything by far there should be hiding layer options or like muting
+so hiding like i button or like mic button to mute the audio and all if it's possible i hope by far i tried
+explaining much of the things now let me check what you come up with
