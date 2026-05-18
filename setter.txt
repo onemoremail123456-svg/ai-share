@@ -1,0 +1,827 @@
+# SETTER — AI-Powered Natural Language Command System for After Effects
+
+---
+
+## WHAT SETTER IS
+
+Setter is an integrated AI command interface within Touch Tools that accepts natural language instructions (typed or voice) and translates them into After Effects operations. It functions as a bridge between human intent and AE's ExtendScript execution engine. The user describes what they want ("make this layer bounce up and down" or "add a gaussian blur that animates from 0 to 50 over 2 seconds"), and Setter figures out the correct ExtendScript to make it happen.
+
+The system has two operational modes: **API Mode** (direct integration with an AI provider via API key) and **Workaround Mode** (a proxy-based approach that routes commands through a free AI service opened in the browser, requiring no API key or payment).
+
+Both modes share the same UI, the same command pipeline, and the same execution architecture. The only difference is where the natural-language-to-code translation happens.
+
+---
+
+## ARCHITECTURE OVERVIEW
+
+### API Mode Flow
+
+```
+User types/speaks command in Setter UI
+  → Browser (app.js) sends command to Node server
+  → Node server calls AI API (OpenAI, Anthropic, Google, etc.)
+  → AI returns ExtendScript code
+  → Node server validates/escapes the script
+  → Script sent to bridge.jsx via existing TCP socket
+  → AE executes the script
+  → Result flows back through bridge → server → browser
+  → Setter displays result confirmation
+```
+
+### Workaround Mode Flow
+
+```
+User types/speaks command in Setter UI
+  → Browser (app.js) sends command to Node server
+  → Node server opens headless browser (Puppeteer/Playwright)
+    OR uses the user's already-open AI browser tab
+  → Command is injected into the AI chat interface
+  → AI response is captured (DOM scraping or accessibility tree)
+  → ExtendScript code is extracted from the response
+  → Script sent to bridge.jsx via existing TCP socket
+  → AE executes the script
+  → Result flows back
+  → Setter displays result confirmation
+```
+
+### Voice Input Flow (Both Modes)
+
+```
+User clicks microphone button
+  → Browser's Web Speech API (SpeechRecognition) captures audio
+  → Real-time transcription displayed in input field
+  → On speech end, transcription becomes the command text
+  → Normal command flow begins
+```
+
+---
+
+## SETTER UI — PANEL LOCATION AND STRUCTURE
+
+### Panel Access
+
+Setter gets its own tab in the main tab strip, positioned as the rightmost tab:
+
+```
+Layers | Transform | Effects | Shapes | Camera | Text | Masks | Keyframes | X Mode | Setter
+```
+
+Additionally, a **Setter quick-access bar** sits above the tab strip — a persistent single-line input that's always visible regardless of which tab is active. This allows the user to issue a Setter command from any context without switching tabs. The full Setter tab shows the expanded view with history, settings, and output.
+
+### Quick-Access Bar (Always Visible)
+
+```
+[🎤] [Type a command for After Effects...                    ] [▶ Run]
+```
+
+- **Microphone button (🎤):** Activates voice input via Web Speech API. While recording, the icon changes to a pulsing red dot (🔴) indicating active recording. The transcription appears in real-time in the input field. On speech end (detected by the API's silence threshold), the command is ready to submit.
+- **Input field:** A text input where the user types or speaks their command. Placeholder: "Type a command for After Effects..." or "Describe what you want to do..."
+- **Run button (▶):** Submits the command. Also triggered by pressing Enter in the input field.
+
+This quick-access bar is always visible, just like the timeline bar. It sits between the tab strip and the panel content area. It has a subtle background differentiation from the panel content (slightly elevated surface) and a thin top border separator.
+
+### Full Setter Tab Panel
+
+When the Setter tab is active, the expanded panel shows:
+
+```
+┌──────────────────────────────────────────────────────┐
+│ SETTER                                    [⚙ Settings]│
+│ Mode: [API ●] [Workaround ○]                         │
+├──────────────────────────────────────────────────────┤
+│                                                      │
+│ ┌─ COMMAND HISTORY ─────────────────────────────────┐│
+│ │                                                   ││
+│ │  👤 "Add a solid layer and make it red"           ││
+│ │  🤖 Script executed. Layer 1 created.             ││
+│ │     [View Script ▾]                               ││
+│ │     ┌─────────────────────────────────────────┐   ││
+│ │     │ var comp = app.project.activeItem;       │   ││
+│ │     │ var solid = comp.layers.addSolid(         │   ││
+│ │     │   [1,0,0], "Red Solid",                   │   ││
+│ │     │   comp.width, comp.height, 1);            │   ││
+│ │     └─────────────────────────────────────────┘   ││
+│ │                                                   ││
+│ │  👤 "Set its opacity to 50% and add a drop shadow"││
+│ │  🤖 Script executed. Properties updated.          ││
+│ │     [View Script ▾]                               ││
+│ │                                                   ││
+│ │  👤 "Create a text layer saying Hello World"      ││
+│ │  ⚠️ Script returned an error: "Unable to create.." ││
+│ │     [View Script ▾] [View Error ▾]                ││
+│ │                                                   ││
+│ └───────────────────────────────────────────────────┘│
+│                                                      │
+│ ┌─ SUGGESTED COMMANDS ──────────────────────────────┐│
+│ │ [Add shape layer] [Set keyframe] [Apply effect]   ││
+│ │ [Rename layer] [Duplicate] [Change comp settings] ││
+│ └───────────────────────────────────────────────────┘│
+│                                                      │
+│ ┌─ SYSTEM PROMPT (Advanced) ────────────────────────┐│
+│ │ [Expand to edit the AI system prompt]              ││
+│ │ [Current context: comp1, Layer 3 selected, ...]   ││
+│ └───────────────────────────────────────────────────┘│
+│                                                      │
+└──────────────────────────────────────────────────────┘
+```
+
+### Component Breakdown
+
+**Mode Toggle:** Two radio-style buttons — "API" and "Workaround". Selecting one switches the active mode. The selected button has accent styling. The mode selection is persisted in localStorage.
+
+**Command History:** A scrollable list of all previous commands and their results. Each entry shows:
+- User command with a person icon (👤) and the command text
+- AI/exec result with a robot icon (🤖) and a brief confirmation or error message
+- A collapsible "View Script" section showing the actual ExtendScript that was generated and executed
+- A collapsible "View Error" section (only on failures) showing the full error message from AE
+
+New entries appear at the bottom. The list auto-scrolls to show the latest entry. History is persisted in localStorage (last 100 commands) so it survives page reloads.
+
+**Suggested Commands:** A row of clickable chips showing commonly used commands. These serve as quick-start templates and also demonstrate what Setter can do. Clicking a chip inserts its text into the input field. The suggestions rotate or adapt based on context (e.g., if a text layer is selected, suggest text-related commands).
+
+**System Prompt (Advanced):** An expandable section showing the current system prompt being sent to the AI. This includes contextual information about the current AE state: active comp name, selected layer, layer type, current time, etc. Advanced users can edit the system prompt to customize Setter's behavior. The system prompt is auto-generated but user-editable.
+
+---
+
+## VOICE INPUT SYSTEM
+
+### Web Speech API Implementation
+
+The browser's built-in `SpeechRecognition` API (available in Chrome and Edge, partial support in other browsers) provides speech-to-text without any external service or API key.
+
+```
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.continuous = false;  // Stop after one utterance
+recognition.interimResults = true;  // Show real-time transcription
+recognition.lang = 'en-US';  // Default, configurable in settings
+```
+
+**Microphone button behavior:**
+1. Click to start recording. Icon changes to red pulsing dot.
+2. Speech recognition begins. Interim results appear in the input field in real-time (slightly grayed to indicate they're not final).
+3. When the user stops speaking (silence detected by the API), `recognition.onresult` fires with the final transcript.
+4. The input field shows the final text (not grayed).
+5. The user can review and edit the text before pressing Enter/Run.
+6. Alternatively, a "Submit on speech end" option (configurable in settings) auto-submits the command when speech ends.
+
+**Error handling:**
+- If `SpeechRecognition` is not available (Firefox, Safari), the microphone button is disabled with a tooltip: "Voice input requires Chrome or Edge."
+- If microphone permission is denied, show a toast: "Microphone access denied. Check browser permissions."
+- If speech is not recognized (no speech detected), show a toast: "No speech detected. Try again."
+
+**Language configuration:** The voice recognition language is configurable in Setter settings. Common languages: English (US, UK), Spanish, French, German, Japanese, Korean, Chinese (Simplified, Traditional), Portuguese, Hindi. The user selects their language from a dropdown, and `recognition.lang` is updated accordingly.
+
+---
+
+## API MODE — DETAILED IMPLEMENTATION
+
+### Supported AI Providers
+
+The API mode supports any AI provider that exposes a chat/completions API endpoint. Pre-configured providers:
+
+**OpenAI:**
+- Endpoint: `https://api.openai.com/v1/chat/completions`
+- Models: gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-3.5-turbo
+- Auth: Bearer token (API key)
+
+**Anthropic (Claude):**
+- Endpoint: `https://api.anthropic.com/v1/messages`
+- Models: claude-sonnet-4-20250514, claude-3-5-haiku-20241022, claude-3-opus-20240229
+- Auth: API key header
+
+**Google (Gemini):**
+- Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent`
+- Models: gemini-2.0-flash, gemini-1.5-pro, gemini-1.5-flash
+- Auth: API key query parameter
+
+**Custom Endpoint:**
+- Any OpenAI-compatible API endpoint (many local LLM servers like Ollama, LM Studio, text-generation-webui expose OpenAI-compatible APIs)
+- User provides: endpoint URL, model name, API key (optional for local models)
+
+### API Configuration Panel
+
+Accessible via the gear icon (⚙) in the Setter tab:
+
+```
+┌─ SETTER SETTINGS ────────────────────────────────────┐
+│                                                      │
+│ Provider: [OpenAI ▾]                                 │
+│ API Key:  [●●●●●●●●●●●●●●●●] (stored in localStorage)│
+│ Model:    [gpt-4o-mini ▾]                            │
+│ Endpoint: [https://api.openai.com/v1/chat/completions]│
+│                                                      │
+│ Voice Language: [English (US) ▾]                     │
+│ Auto-submit voice: [toggle off]                      │
+│ Max tokens: [2048]                                   │
+│ Temperature: [0.3]                                   │
+│                                                      │
+│ [Test Connection]                                    │
+│                                                      │
+└──────────────────────────────────────────────────────┘
+```
+
+**API Key Storage:** The API key is stored in `localStorage`. This is acceptable for a local/personal tool — the key never leaves the user's machine except to the AI provider's API. For additional security, the input field uses `type="password"` with a toggle visibility button.
+
+**Test Connection:** Sends a minimal request to the AI provider to verify the API key works. Shows success/failure toast.
+
+**Temperature:** Lower values (0.0-0.3) produce more deterministic, consistent ExtendScript output. Higher values (0.5-1.0) produce more varied output. For code generation, low temperature is recommended. Default: 0.3.
+
+**Max tokens:** Controls maximum response length. 2048 is sufficient for most ExtendScript snippets. Complex multi-step operations may need 4096. Default: 2048.
+
+### System Prompt Architecture
+
+The system prompt sent to the AI contains three layers:
+
+**Layer 1 — Static Context (always included):**
+```
+You are an After Effects ExtendScript expert. The user will describe what they 
+want to do in After Effects using natural language. Your job is to respond with 
+ONLY valid ExtendScript code that accomplishes the task. No explanations, no 
+markdown formatting, no code fences — ONLY the raw script code.
+
+Important rules:
+- Use app.project.activeItem to get the current composition
+- Use comp.selectedLayers to get selected layers when applicable
+- All values must be appropriate for the current composition
+- Wrap operations in app.beginUndoGroup() / app.endUndoGroup() for undo support
+- Handle errors with try/catch and return meaningful error messages
+- Use proper ExtendScript syntax (not modern JavaScript where ExtendScript differs)
+- For color values, use [r, g, b] arrays with 0-1 range
+- For layer properties, use the AE property path hierarchy
+```
+
+**Layer 2 — Dynamic Context (auto-updated with each command):**
+```
+Current context:
+- Active composition: "{compName}" ({width}x{height}, {duration}s, {fps}fps)
+- Background color: {bgColor}
+- Selected layer: Layer {index} "{layerName}" (type: {layerType})
+- Current time: {timecode} ({seconds}s)
+- Total layers: {layerCount}
+- Layer transform: position={pos}, rotation={rot}, scale={scale}, opacity={opacity}
+- Layer effects: {effectList}
+```
+
+This dynamic context is generated fresh before each command by reading the current AE state through existing bridge commands (`getActiveComp`, `getLayerProperties`, `getCurrentTime`). It gives the AI precise information about what exists in the composition, so it can generate accurate, context-aware code.
+
+**Layer 3 — User Customization (editable in settings):**
+```
+Additional instructions: {userCustomPrompt}
+```
+
+The user can add custom instructions like "always use ease-ease keyframes" or "default font is Arial" or "prefer expressions over keyframes when possible." This layer is optional and empty by default.
+
+### API Request Flow
+
+When the user submits a command:
+
+1. **Gather dynamic context:** Call `getActiveComp`, `getLayerProperties`, `getCurrentTime` via existing bridge commands. Wait for all to resolve.
+2. **Construct message:** Combine system prompt (all three layers) + conversation history (last 5 user/assistant exchanges for continuity) + current user command.
+3. **Send to AI provider:** HTTP POST to the configured endpoint with the full message payload.
+4. **Receive response:** Parse the AI's response. Extract the ExtendScript code. The AI may wrap it in markdown code fences despite instructions — strip those.
+5. **Validate script:** Basic syntax validation — check for balanced braces, ensure it's not empty, ensure it doesn't contain obviously dangerous patterns (infinite loops, `app.quit()`, `system.callSystem()` with destructive commands).
+6. **Execute script:** Send via `executeScript` command to bridge.jsx.
+7. **Report result:** Show success or error in the command history. If the script returns a value (e.g., "Layer created successfully"), display it.
+
+### Conversation History for Multi-Step Operations
+
+The last 5 command/response pairs are included in the API request as conversation history. This enables multi-step workflows:
+
+- User: "Create a red solid"
+- AI: *creates solid, returns success*
+- User: "Make it 50% opacity"
+- AI: *knows "it" refers to the solid just created, sets opacity*
+- User: "Add a Gaussian blur to it"
+- AI: *adds blur to the same solid*
+
+Without conversation history, each command would be independent and "it" would have no referent.
+
+### Script Extraction and Cleaning
+
+The AI response may contain:
+- Raw ExtendScript (ideal)
+- ExtendScript wrapped in triple backtick code fences
+- ExtendScript preceded by explanation text
+- Multiple code blocks with explanations between them
+
+The extraction logic:
+1. Check for triple backtick blocks (with or without "javascript" or "jsx" language hint). Extract the content of the last code block (the actual script is usually the last block after explanations).
+2. If no code fences, look for lines that start with ExtendScript patterns (`var `, `app.`, `comp.`, `layer.`, `function `, `try {`, etc.) and extract the contiguous block.
+3. If the entire response looks like code (no natural language sentences), use it as-is.
+4. After extraction, strip any trailing explanation text that slipped through.
+
+### Error Recovery and Retry
+
+If the generated script fails:
+1. Show the error in the command history
+2. Automatically send a follow-up request to the AI with the context: "The following script failed with this error: [error message]. Original request: [user's command]. Please fix the script and provide corrected code."
+3. Execute the corrected script
+4. If it fails again, show both attempts in the history and suggest the user rephrase their command
+
+This auto-retry mechanism handles common issues like wrong property paths, incorrect API usage, or type mismatches.
+
+---
+
+## WORKAROUND MODE — DETAILED IMPLEMENTATION
+
+### Purpose
+
+Workaround mode exists because not everyone has an AI API key or wants to pay per token. It allows the user to leverage any free AI chatbot website by automating the interaction with that website through the browser.
+
+### How It Works — Browser Proxy Architecture
+
+The Node.js server runs a **headless browser** (Puppeteer or Playwright) that:
+1. Opens the user's chosen AI chatbot website
+2. Waits for the page to load and any login to be completed
+3. Injects the user's command into the chat input field
+4. Clicks the send button
+5. Monitors the AI's response area for new content
+6. Extracts the AI's text response from the DOM
+7. Parses the ExtendScript code from the response
+8. Sends it to the bridge
+
+### Setup Flow
+
+When the user first enables Workaround mode:
+
+1. **Select AI service:** The user chooses from a list of known AI chatbot websites:
+   - ChatGPT (chat.openai.com)
+   - Google Gemini (gemini.google.com)
+   - Claude (claude.ai)
+   - DeepSeek (chat.deepseek.com)
+   - Perplexity (perplexity.ai)
+   - Custom URL (any AI chatbot)
+
+2. **Launch headless browser:** The Node server starts Puppeteer/Playwright in **headed mode** (not headless — the user needs to see the browser to log in). A Chromium window opens showing the selected AI website.
+
+3. **User logs in:** The user manually logs into the AI website using their own account. This is a one-time setup (session cookies persist).
+
+4. **Ready:** Once logged in, the browser is ready to accept commands. The Setter UI shows "Workaround mode ready — connected to [service name]."
+
+### Command Injection — Per-Service Selectors
+
+Each AI chatbot website has different DOM structures. The Node server needs CSS selectors or XPath expressions for each service to:
+- Find the chat input textarea
+- Find the send button
+- Find the response container
+- Detect when the response is complete (AI finished generating)
+
+**Known service configurations** are stored as selector maps:
+
+```
+const serviceConfigs = {
+  'chatgpt': {
+    inputSelector: '#prompt-textarea',
+    sendSelector: 'button[data-testid="send-button"]',
+    responseSelector: '.markdown',
+    streamingIndicator: 'button[aria-label="Stop generating"]',
+    waitTimeout: 120000
+  },
+  'gemini': {
+    inputSelector: '.ql-editor',
+    sendSelector: '.send-button',
+    responseSelector: '.response-container .markdown',
+    streamingIndicator: '.loading-indicator',
+    waitTimeout: 120000
+  },
+  // ... etc
+};
+```
+
+**Custom URL:** For unknown services, the user can manually specify the selectors in an advanced configuration panel. Or, the system can attempt generic detection (find the largest textarea on the page, find the last button near it, etc.) — this is unreliable but workable as a fallback.
+
+### System Prompt Injection for Workaround Mode
+
+Unlike API mode where the system prompt is part of the API request, Workaround mode must inject the system prompt as part of the conversation. Before the first user command, the system sends a setup message to the AI chatbot:
+
+```
+System: You are an After Effects ExtendScript expert. When I describe something 
+I want to do in After Effects, respond with ONLY the ExtendScript code — no 
+explanations, no markdown. Use app.project.activeItem for the current comp. 
+Wrap all operations in beginUndoGroup/endUndoGroup. Handle errors with try/catch.
+```
+
+This "primes" the AI for subsequent commands. The conversation history is naturally maintained by the chatbot's own interface.
+
+### Response Extraction
+
+After injecting the command and clicking send, the system waits for the AI to finish generating (detected by the streaming indicator disappearing, or by observing that the response text hasn't changed for 2 seconds). Then it extracts the response text from the DOM.
+
+**Extraction logic:**
+1. Query the response container selector for the latest response
+2. Get `textContent` (not `innerHTML` — avoids HTML tags)
+3. Apply the same code extraction logic as API mode (strip code fences, extract ExtendScript patterns)
+4. Clean and validate the extracted code
+
+### Waiting for Response Completion
+
+The trickiest part of Workaround mode is knowing when the AI has finished generating. Methods:
+
+1. **Streaming indicator:** Check if the "Stop generating" or "typing" indicator disappears.
+2. **Text stability:** Poll the response text every 500ms. If the text hasn't changed for 3 consecutive polls (1.5 seconds of stability), consider the response complete.
+3. **Timeout:** Maximum wait of 120 seconds (configurable). If exceeded, assume the response is complete with whatever text is present.
+
+### Workaround Mode — Limitations
+
+- **Latency:** Free AI chatbot responses are slower than API calls (typically 5-30 seconds vs. 1-5 seconds for API).
+- **Reliability:** DOM selectors can break if the chatbot website updates its layout. Selector configs may need periodic updating.
+- **Rate limiting:** Free tiers of AI chatbots have usage limits. Heavy use may trigger rate limiting or CAPTCHAs.
+- **Login persistence:** Session cookies may expire, requiring re-login.
+- **Single conversation:** The headless browser maintains one conversation thread. Very long conversations may hit the chatbot's context window limit.
+
+Despite these limitations, Workaround mode provides a zero-cost path for users who want to try Setter without committing to an API subscription.
+
+---
+
+## VOICE INTERACTION — ADVANCED FEATURES
+
+### Wake Word (Optional)
+
+An optional "Hey Setter" wake word activation using the browser's Speech Recognition in continuous mode. When enabled, the system listens continuously (consuming more battery/CPU) and activates the input field when it hears "Hey Setter" or "Hey Set" or a custom wake word.
+
+**Implementation:** Use `recognition.continuous = true` and check each interim result for the wake word. When detected, play a subtle audio cue (a short "ding" sound) and start accepting the actual command.
+
+**Resource management:** Continuous listening is resource-intensive. Automatically disable after 5 minutes of inactivity. Re-enable when the user clicks the microphone button.
+
+### Voice Feedback (Text-to-Speech)
+
+After a command is executed, optionally read back the result using the browser's `SpeechSynthesis` API:
+
+```
+const utterance = new SpeechSynthesisUtterance("Layer created. Opacity set to 50 percent.");
+speechSynthesis.speak(utterance);
+```
+
+This is useful for hands-free operation (e.g., user is looking at a second monitor showing AE's viewport and wants audio confirmation that the command worked).
+
+Configurable: On/Off toggle in settings. Voice selection dropdown (browser-provided voices).
+
+### Natural Language Understanding — Command Enrichment
+
+Before sending the command to the AI, app.js performs basic natural language enrichment to add context:
+
+**Pronoun resolution:** If the user says "make it red," "it" refers to the currently selected layer. Replace "it" with the actual layer name or index.
+
+**Ambiguity detection:** If the user says "add a blur," there are multiple blur types. Rather than guessing, the system can ask for clarification: "Which type of blur? Gaussian, Fast, Camera Lens, Radial, or Directional?" — implemented as a quick-select prompt in the UI before the command is sent to the AI.
+
+**Unit inference:** If the user says "move it 100 pixels to the right," the system can add context: "100 pixels in the X axis from the current position."
+
+This enrichment is optional and lightweight — it runs in app.js before the command is sent, using simple string matching and the current AE context state. It doesn't require AI processing itself.
+
+---
+
+## SYSTEM PROMPT — COMPLETE TEMPLATE
+
+The full system prompt that is sent to the AI (in API mode) or injected into the conversation (in Workaround mode):
+
+```
+You are an After Effects ExtendScript automation expert. You receive natural 
+language commands from the user describing what they want to do in After Effects, 
+and you respond with ONLY valid, executable ExtendScript code. No explanations, 
+no markdown fences, no commentary — just the raw script.
+
+RULES:
+1. Always use app.project.activeItem to get the current composition
+2. Use comp.selectedLayers or the specified layer index to target layers
+3. Wrap all operations in app.beginUndoGroup("Description") and 
+   app.endUndoGroup() for proper undo support
+4. Use try/catch blocks. On error, return the error message as a string:
+   "ERROR: description of what went wrong"
+5. On success, return a brief confirmation string:
+   "SUCCESS: description of what was done"
+6. Use proper ExtendScript syntax — no arrow functions, no let/const, 
+   no template literals, no modern JS features not in ECMA-262 3rd edition
+7. For colors, use [r, g, b] arrays with 0-1 range (e.g., red = [1, 0, 0])
+8. For 3D values, use [x, y, z] arrays
+9. For layer creation, specify all required parameters explicitly
+10. For property access, use the full AE property path hierarchy:
+    layer.property("ADBE Transform Group").property("ADBE Position")
+11. For effect parameters, use the effect's match name:
+    layer.property("ADBE Effect Parade").property("ADBE Gaussian Blur 2")
+       .property("ADBE Gaussian Blur 2-0001")
+12. When setting keyframes, use property.setValueAtTime(time, value)
+13. For time values, use seconds (not frames)
+14. Handle the case where no composition is open (return error message)
+15. Handle the case where no layer is selected when one is expected
+
+COMMON MATCH NAMES:
+- Position: "ADBE Transform Group"/"ADBE Position"
+- Anchor Point: "ADBE Transform Group"/"ADBE Anchor Point"  
+- Scale: "ADBE Transform Group"/"ADBE Scale"
+- Rotation: "ADBE Transform Group"/"ADBE Rotate Z"
+- Opacity: "ADBE Transform Group"/"ADBE Opacity"
+- Gaussian Blur: "ADBE Gaussian Blur 2"
+- Fast Blur: "ADBE Fast Blur"
+- Drop Shadow: "ADBE Drop Shadow"
+- Fill: "ADBE Fill"
+- Tint: "ADBE Tint"
+- Curves: "ADBE CurvesCustom"
+- Hue/Saturation: "ADBE HUE SATURATION"
+- Levels: "ADBE Easy Levels2"
+- Text Source: "ADBE Text Properties"/"ADBE Text Document"
+- Mask: "ADBE Mask Parade"
+- Shape Contents: "ADBE Root Vectors Group"
+- Rectangle Path: "ADBE Vector Shape - Rect"
+- Ellipse Path: "ADBE Vector Shape - Ellipse"
+- Fill: "ADBE Vector Graphic - Fill"
+- Stroke: "ADBE Vector Graphic - Stroke"
+- Trim Paths: "ADBE Vector Filter - Trim"
+
+{DYNAMIC_CONTEXT}
+
+{USER_CUSTOM_INSTRUCTIONS}
+```
+
+The `{DYNAMIC_CONTEXT}` and `{USER_CUSTOM_INSTRUCTIONS}` placeholders are replaced with the live context data and user's custom prompt before each API call.
+
+---
+
+## EXAMPLE COMMANDS AND EXPECTED BEHAVIOR
+
+### Layer Creation
+
+**User:** "Create a black solid that's 1920 by 1080"
+**AI generates:**
+```
+app.beginUndoGroup("Create Black Solid");
+try {
+  var comp = app.project.activeItem;
+  if (!comp || !(comp instanceof CompItem)) {
+    "ERROR: No composition is open";
+  } else {
+    var solid = comp.layers.addSolid(
+      [0, 0, 0], "Black Solid", 1920, 1080, 1
+    );
+    "SUCCESS: Created black solid layer " + solid.index;
+  }
+} catch(e) {
+  "ERROR: " + e.toString();
+}
+app.endUndoGroup();
+```
+
+### Animation
+
+**User:** "Make the selected layer bounce up 200 pixels and back, over 1 second, starting at the current time"
+**AI generates:** Keyframe animation on position with appropriate easing.
+
+### Effect Application
+
+**User:** "Add a Gaussian blur to the selected layer and animate it from 0 to 30 over 2 seconds"
+**AI generates:** Effect addition + keyframes on the blur amount property.
+
+### Complex Operations
+
+**User:** "Create a shape layer with a red rectangle, add trim paths, and animate the end property from 0 to 100 over 3 seconds"
+**AI generates:** Shape layer creation, rectangle path, fill, trim paths addition, and keyframe animation — all in one script.
+
+### Context-Aware Operations
+
+**User:** "Duplicate this layer and offset it 10 frames to the right"
+**AI knows** from dynamic context which layer is selected, what its current in point is, and creates a duplicate with adjusted timing.
+
+### Undoable Operations
+
+Every generated script wraps in `beginUndoGroup` / `endUndoGroup`, so the user can Ctrl+Z in AE to undo any Setter command.
+
+---
+
+## SAFETY AND VALIDATION
+
+### Pre-Execution Validation
+
+Before executing any AI-generated script, perform these checks:
+
+**Structural validation:**
+- Script is not empty
+- Braces are balanced (count `{` vs `}`)
+- No unmatched parentheses
+- Script length is reasonable (under 50,000 characters)
+
+**Safety validation — reject scripts containing:**
+- `app.quit()` — would close After Effects
+- `system.callSystem()` — could execute arbitrary system commands
+- `File(` with write operations to system directories
+- `$.evalFile()` — could execute external scripts
+- `app.project.close()` without `CloseOptions.DO_NOT_SAVE`
+- Infinite loop patterns (`while(true)` without break)
+- `app.project.remove()` — would delete project items without confirmation
+
+**User confirmation for destructive operations:**
+- Scripts that delete layers (`layer.remove()`)
+- Scripts that modify project settings
+- Scripts that close or overwrite files
+- Scripts that affect the render queue
+
+For destructive operations, show a preview: "This script will delete Layer 3. Proceed? [Yes] [No] [View Script]"
+
+### Post-Execution Feedback
+
+After execution, the bridge returns the script's return value. Parse it:
+- If starts with "SUCCESS:" → show green success toast and success icon in history
+- If starts with "ERROR:" → show red error toast and error icon in history, offer auto-retry
+- If empty or unexpected → show amber warning: "Script executed but returned no confirmation"
+
+### Execution Timeout
+
+Script execution has a 15-second timeout (longer than the standard command timeout because complex scripts may take longer). If exceeded, show: "Script execution timed out. The operation may still be running in AE."
+
+---
+
+## CONVERSATION CONTINUITY
+
+### Context Window Management
+
+AI models have limited context windows. For long conversations:
+
+**API mode:** Include the last 5 command/response pairs plus the system prompt. If the context approaches the model's limit, summarize older exchanges into a brief note: "Previously: created red solid, added blur, animated opacity."
+
+**Workaround mode:** The chatbot handles its own context. But when the conversation gets very long, the quality of responses may degrade. Suggest starting a new conversation (with a "New Conversation" button in the settings) when this happens.
+
+### New Conversation
+
+A "New Conversation" button clears the conversation history (both local and sends a fresh system prompt). This is useful when:
+- Switching to a different task/composition
+- Response quality has degraded due to long conversation
+- The user wants to start fresh
+
+---
+
+## INTEGRATION WITH EXISTING TOUCH TOOLS FEATURES
+
+### Setter-Aware State Updates
+
+When a Setter command modifies the composition (adds a layer, changes properties, etc.), the Touch Tools UI must reflect these changes. After each successful script execution:
+
+1. If layers were added/removed: `loadLayers()`
+2. If properties changed: `loadLayerProperties()` for the affected layer
+3. If effects were added/removed: `loadEffects()` for the affected layer
+4. If comp settings changed: refresh comp settings display
+5. Always: `refreshTransport()` to sync timecode
+
+This is the same cascade pattern used by every other command in Touch Tools. The `aeCommand` wrapper handles it.
+
+### Context from Touch Tools to Setter
+
+Setter's dynamic context (system prompt Layer 2) reads from the current Touch Tools state. When the user selects a layer in the layer list, switches comps, or moves the playhead, the Setter context updates automatically. This means:
+
+- If the user selects Layer 3 and says "make it 50% opacity," Setter knows exactly which layer "it" is.
+- If the user moves the playhead to 2 seconds and says "add a keyframe here," Setter knows the exact time.
+- If the user switches to a different comp, Setter's context reflects the new comp.
+
+### Setter Output to Touch Tools
+
+When a Setter command creates new layers or modifies existing ones, the changes are reflected in Touch Tools' standard UI layers:
+
+- New layers appear in the layer list
+- Property changes are visible in scrub dials
+- Effect changes appear in the effects panel
+- Keyframe changes appear in the keyframes panel
+
+There is no special "Setter view" — everything flows through the same state management system.
+
+---
+
+## NODE.JS SERVER — NEW ENDPOINTS
+
+### API Mode Endpoint
+
+The Node.js server needs a new HTTP endpoint for API mode commands:
+
+**`POST /api/setter/command`**
+- Body: `{ command: string, mode: 'api', context: object }`
+- The server constructs the full prompt (system + context + history + command)
+- Sends to the configured AI API
+- Returns: `{ script: string, raw_response: string }`
+
+### Workaround Mode Endpoint
+
+**`POST /api/setter/workaround`**
+- Body: `{ command: string }`
+- The server injects the command into the headless browser
+- Waits for response
+- Extracts script
+- Returns: `{ script: string, raw_response: string }`
+
+### Workaround Browser Management
+
+**`POST /api/setter/workaround/launch`**
+- Launches the headless browser with the selected service URL
+- Returns: `{ status: 'launched', service: string }`
+
+**`POST /api/setter/workaround/login`**
+- Makes the browser window visible (headed mode) so the user can log in manually
+- Returns: `{ status: 'waiting_for_login' }`
+
+**`GET /api/setter/workaround/status`**
+- Returns: `{ ready: boolean, service: string, loggedIn: boolean }`
+
+**`POST /api/setter/workaround/close`**
+- Closes the headless browser
+- Returns: `{ status: 'closed' }`
+
+### Configuration Endpoint
+
+**`POST /api/setter/config`**
+- Body: `{ provider, apiKey, model, endpoint, voiceLang, autoSubmit, maxTokens, temperature, customPrompt }`
+- Saves configuration (server-side for API keys, localStorage for preferences)
+- Returns: `{ status: 'saved' }`
+
+**`GET /api/setter/config`**
+- Returns current configuration (API key masked)
+
+---
+
+## DEPENDENCIES
+
+### For API Mode (Server-Side)
+
+- No new dependencies needed. The Node server makes HTTP requests to AI APIs using the built-in `https` module or `node-fetch`.
+
+### For Workaround Mode (Server-Side)
+
+- **Puppeteer** or **Playwright:** Headless browser automation library. This is the only significant new dependency.
+  - Puppeteer: `npm install puppeteer` (~300MB download, includes Chromium)
+  - Playwright: `npm install playwright` (~400MB download, includes Chromium/Firefox/WebKit)
+  - Puppeteer is lighter and sufficient for this use case.
+
+### For Voice Input (Client-Side)
+
+- No dependencies. Uses the browser's built-in `SpeechRecognition` and `SpeechSynthesis` APIs.
+
+---
+
+## SETTINGS PERSISTENCE
+
+### localStorage Keys
+
+- `setter.mode`: 'api' or 'workaround'
+- `setter.provider`: 'openai', 'anthropic', 'google', 'custom'
+- `setter.apiKey`: encrypted or base64-encoded API key (basic obfuscation)
+- `setter.model`: model name string
+- `setter.endpoint`: custom endpoint URL
+- `setter.voiceLang`: language code
+- `setter.autoSubmitVoice`: boolean
+- `setter.maxTokens`: number
+- `setter.temperature`: number
+- `setter.customPrompt`: string
+- `setter.history`: JSON array of last 100 command/response pairs
+- `setter.voiceFeedback`: boolean
+- `setter.wakeWord`: boolean
+
+### Server-Side Config (Optional)
+
+For multi-user scenarios or more secure API key storage, configuration can be stored server-side in a `config.json` file instead of localStorage. The server endpoints handle reading/writing this file.
+
+---
+
+## EXTENSIBILITY
+
+### Adding New AI Providers
+
+To add a new AI provider, add an entry to the provider configuration with:
+- API endpoint URL
+- Request format (how to construct the message payload)
+- Response format (how to extract the text from the response)
+- Auth method (header, query parameter, etc.)
+
+The system is designed with a provider abstraction layer — the core logic (context gathering, history management, script extraction, validation, execution) is provider-agnostic.
+
+### Adding New Workaround Services
+
+To support a new AI chatbot website:
+1. Identify the CSS selectors for input, send button, and response area
+2. Add the selector configuration to the service configs
+3. Test the injection/extraction flow
+4. Add the service to the dropdown menu
+
+Community contributions of selector configs for new services could be shared as JSON configuration files.
+
+### Plugin Extension Point
+
+Setter's command execution pipeline can be extended by X Mode plugins. A plugin could:
+- Pre-process commands (translate from non-English languages)
+- Post-process scripts (add logging, wrap in additional error handling)
+- Add domain-specific knowledge (motion graphics templates, character animation rigs)
+- Connect to specialized AI models fine-tuned on ExtendScript
+
+---
+
+## SETTER IN CONTEXT OF TOUCH TOOLS
+
+Setter is not a replacement for Touch Tools' visual controls. It's a **complement** to them. The visual controls (scrub dials, trackpad, layer list, effect cards) are for precise, tactile, iterative work — adjusting a slider until it looks right, dragging a position until it feels right.
+
+Setter is for **declarative** work — describing what you want at a higher level of abstraction:
+- "Create a title card with the text 'Welcome' that fades in over 1 second"
+- "Add a camera that orbits around the center of the composition"
+- "Apply a color correction that makes this look cinematic"
+- "Keyframe all the layers to fade in one after another with 0.5 second stagger"
+
+These are tasks that would require many clicks and drags with the visual controls but can be expressed in a single sentence. Setter handles the tedious implementation while the user focuses on creative intent.
+
+The two modes of interaction — visual (Touch Tools controls) and declarative (Setter commands) — work together. The user might use Setter to scaffold a complex animation, then use the scrub dials and trackpad to fine-tune the timing and values. Or use the visual controls to set up a composition, then use Setter to apply a complex effect chain that would take many steps manually.
+
+---
+
+This is the complete architectural specification for Setter. It covers both operational modes (API and Workaround), voice input, the AI prompt engineering, safety validation, integration with existing Touch Tools features, server-side requirements, and the philosophy of how Setter complements the visual control surface.
