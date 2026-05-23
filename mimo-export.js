@@ -1,193 +1,136 @@
 (function(){
 'use strict';
 
-var old=document.getElementById('mimo-x-panel');
-if(old)old.remove();
+var old = document.getElementById('uni-panel');
+if(old) old.remove();
 
-var C={scrollPause:1000,loadWait:2500,switchWait:3500,maxScrolls:500,stableHits:3,sbScrollWait:1200};
-
-var P=document.createElement('div');
-P.id='mimo-x-panel';
-P.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#0d1117;color:#c9d1d9;font:11px/1.5 ui-monospace,monospace;padding:10px 14px;max-height:42vh;overflow:auto;border-bottom:2px solid #58a6ff;box-shadow:0 8px 32px rgba(0,0,0,.6)';
-P.onclick=function(){P.remove()};
+var P = document.createElement('div');
+P.id = 'uni-panel';
+P.style.cssText = 'position:fixed;bottom:0;left:0;right:0;height:45%;background:#0d1117;color:#c9d1d9;font:11px monospace;z-index:2147483647;padding:12px;overflow-y:auto;border-top:3px solid #58a6ff;box-shadow:0 -8px 24px rgba(0,0,0,0.6);';
 document.body.appendChild(P);
 
-function log(m,c){
-  var d=document.createElement('div');
-  d.style.cssText='color:'+(c||'#c9d1d9');
-  d.textContent=m;
+function log(t, c){
+  var d = document.createElement('div');
+  d.style.cssText = 'color:' + (c || '#c9d1d9') + ';margin-bottom:2px;';
+  d.textContent = t;
   P.appendChild(d);
-  P.scrollTop=1e9;
+  P.scrollTop = P.scrollHeight;
 }
-function wait(ms){return new Promise(function(r){setTimeout(r,ms)})}
 
-function qsa(s){try{return[].slice.call(document.querySelectorAll(s))}catch(e){return[]}}
-function ms(sels){for(var i=0;i<sels.length;i++){try{var r=document.querySelector(sels[i]);if(r)return r}catch(e){}}return null}
+const wait = ms => new Promise(res => setTimeout(res, ms));
 
-function findSidebarItems(){
-  // Look for items in the history panel based on common text patterns or sidebar navigation clues
-  var items = qsa('a, button, [role="button"], li, [class*="item"]').filter(function(el){
-    var r = el.getBoundingClientRect();
-    if(r.left > window.innerWidth * 0.5) return false; // Must be on left side of screen
-    var t = el.textContent.trim();
-    return t.length >= 2 && t.length <= 150 && r.height > 10;
+async function main() {
+  log("═══ MiMo Batch Engine v3.0 ═══", "#58a6ff");
+  
+  // 1. Target all sidebar elements based on the exact titles found in your text file
+  var allElements = Array.from(document.querySelectorAll('div, p, span, li, a'));
+  var sidebarItems = allElements.filter(function(el) {
+    if (el.children.length > 1) return false;
+    var txt = el.innerText ? el.innerText.trim() : '';
+    // This matches the exact history titles discovered in your log file
+    return el.getBoundingClientRect().left < window.innerWidth * 0.4 && 
+           txt.length > 3 && 
+           !/^(History|MiMo Chat|Free Trial)$/i.test(txt);
   });
 
-  var out=[];
-  for(var i=0; i<items.length; i++){
-    var el=items[i], dom=false;
-    for(var j=0; j<out.length; j++){
-      if(out[j].contains(el)){dom=true;break}
-      if(el.contains(out[j])){out.splice(j,1);j--}
+  // Deduplicate nested nodes
+  sidebarItems = sidebarItems.filter((el, idx, self) => self.findIndex(t => t.innerText === el.innerText) === idx);
+
+  log("Identified " + sidebarItems.length + " individual chat history slots.");
+
+  if (sidebarItems.length === 0) {
+    log("Directly scraping currently active text frame...", "orange");
+    var singleData = extractVisibleChat();
+    downloadFile("mimo-single-chat.txt", singleData);
+    return;
+  }
+
+  var masterPayload = "===== XIAOMI MIMO MULTI-CHAT EXPORT =====\n\n";
+  var processedCount = 0;
+
+  // 2. Loop and navigate through the target chats automatically
+  for (var i = 0; i < sidebarItems.length; i++) {
+    try {
+      var title = sidebarItems[i].innerText.trim().split('\n')[0];
+      log("\n[" + (i + 1) + "/" + sidebarItems.length + "] Switching to: " + title, "#58a6ff");
+      
+      sidebarItems[i].click();
+      await wait(3000); // Allow new DOM fragments to compile and clear transitions
+
+      // Scroll up to catch long history tracks
+      var chatContainer = document.querySelector('[class*="chat"], [class*="message"], main') || window;
+      if (chatContainer === window) window.scrollTo(0, 0);
+      else chatContainer.scrollTop = 0;
+      await wait(1000);
+
+      var chatContent = extractVisibleChat();
+      if (chatContent.trim().length > 0) {
+        masterPayload += "===== CHAT " + (i + 1) + ": " + title + " =====\n\n" + chatContent + "\n";
+        processedCount++;
+      }
+    } catch (err) {
+      log("Item error processing index " + i + ": " + err.message, "red");
     }
-    if(!dom)out.push(el);
   }
-  return out;
+
+  // 3. Final Export Output Sequence
+  if (processedCount > 0) {
+    downloadFile("mimo-all-chats.txt", masterPayload);
+    log("\nSUCCESS: Compiled " + processedCount + " histories into file!", "lime");
+  } else {
+    log("\nProcessing complete but output string generation failed.", "red");
+  }
 }
 
-function findScrollBox(){
-  var main = ms(['main','[role="main"]','[class*="content"]','[class*="chat"]']) || document.body;
-  var best = null, bestA = 0;
-  var divs = main.querySelectorAll('div');
-  for(var i=0; i<divs.length; i++){
-    var el = divs[i];
-    if(el.scrollHeight - el.clientHeight > 40){
-      var a = el.clientWidth * el.clientHeight;
-      if(a > bestA){bestA = a;best = el}
+function extractVisibleChat() {
+  var output = "";
+  var seenBlocks = new Set();
+  
+  // Targets standard Markdown content containers, chat text elements, and text bubbles
+  var textElements = document.querySelectorAll('p, pre, code, span, div, article, [class*="markdown"]');
+  
+  textElements.forEach(function(el) {
+    if (el.children.length > 2) return; // Drop broad outer structural elements
+    
+    var rawText = (el.innerText || el.textContent || '').trim();
+    
+    // Hard filter out global page layout boilerplate strings found in your log text file
+    if (rawText.length < 2 || seenBlocks.has(rawText)) return;
+    if (/^(Chat, create, and unleash|Ready to explore endless|Try asking:|What to do if you can't stop|Is art still art|How can I eat something|Model demo platform|AI-generated content only|Citation sources|History|MiMo Chat|Free Trial)/i.test(rawText)) return;
+    if (/^(stop|regenerate|clear|share|copy|delete|\?)$/i.test(rawText)) return;
+
+    seenBlocks.add(rawText);
+
+    // Identify message author roles based on system styling standards
+    var computed = window.getComputedStyle(el);
+    var isUserMsg = computed.textAlign === 'right' || 
+                    computed.alignSelf === 'flex-end' || 
+                    el.className.toString().toLowerCase().includes('user') ||
+                    (el.parentElement && el.parentElement.className.toString().toLowerCase().includes('user'));
+
+    if (isUserMsg) {
+      output += "USER:\n" + rawText + "\n\n";
+    } else {
+      output += "AI:\n" + rawText + "\n\n";
     }
-  }
-  return best || window;
-}
-
-async function scrollToTop(box) {
-  log('Loading full history...');
-  var prev = 0, stable = 0, pass = 0;
-  while(pass < 40){ // Safety limit for mobile performance
-    if(box === window) window.scrollTo(0, 0);
-    else box.scrollTop = 0;
-    
-    await wait(C.scrollPause);
-    var h = box === window ? document.documentElement.scrollHeight : box.scrollHeight;
-    if(h === prev){
-      stable++;
-      if(stable >= C.stableHits){log('Reached beginning.','lime'); break;}
-    } else stable = 0;
-    
-    if(pass % 5 === 0) log('  Pass ' + pass + ' | height:' + h);
-    prev = h; pass++;
-  }
-  await wait(C.loadWait);
-}
-
-function extractChat(scrollBox) {
-  var msgs = [];
-  var seen = new Set();
-  
-  // Universal Scraper Strategy: Grab all text containers inside the chat view panel
-  var elements = document.querySelectorAll('p, pre, code, span, div, article');
-  
-  elements.forEach(function(el) {
-    // Skip wrapper items containing deep sub-trees
-    if (el.children.length > 3) return;
-    
-    var txt = (el.innerText || el.textContent || '').trim();
-    if (txt.length < 2 || seen.has(txt)) return;
-    
-    // Skip control UI strings
-    if (/^(\?|🎨|🚀|stop|regenerate|clear|share|copy)$/i.test(txt)) return;
-    
-    seen.add(txt);
-    
-    // Classify Sender using visual layout cues (User texts are typically aligned right or have specific class signatures)
-    var html = el.outerHTML.toLowerCase();
-    var style = window.getComputedStyle(el);
-    var isUser = html.includes('user') || 
-                 style.textAlign === 'right' || 
-                 style.alignSelf === 'flex-end' ||
-                 parseInt(style.paddingLeft) > 100;
-                 
-    msgs.push({
-      role: isUser ? 'USER' : 'AI',
-      text: txt.replace(/\n{3,}/g, '\n\n')
-    });
   });
-  
-  return msgs;
+
+  return output;
 }
 
-function download(name,data){
-  var b=new Blob([data],{type:'text/plain;charset=utf-8'});
-  var u=URL.createObjectURL(b);
-  var a=document.createElement('a');
-  a.href=u; a.download=name;
+function downloadFile(filename, content) {
+  var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
-  setTimeout(function(){a.remove();URL.revokeObjectURL(u)},1000);
-  log('Downloaded: '+name,'lime');
+  setTimeout(function() { a.remove(); URL.revokeObjectURL(url); }, 1500);
 }
 
-async function main(){
-  log('═══ MiMo Chat Export v2.0 ═══','#58a6ff');
-  log('Page: '+location.hostname);
-
-  var items = findSidebarItems();
-  log('Conversations found: ' + items.length);
-
-  if(items.length > 1){
-    log('Exporting ' + items.length + ' chats...');
-    var master='', count=0;
-
-    for(var i=0; i<items.length; i++){
-      var el = items[i];
-      var title = (el.textContent || '').trim().split('\n')[0].substring(0,60) || 'Chat '+(i+1);
-      log('\n['+(i+1)+'/'+items.length+'] ' + title);
-
-      el.click();
-      await wait(C.switchWait);
-
-      var box = findScrollBox();
-      await scrollToTop(box);
-      var msgs = extractChat(box);
-      log('  -> ' + msgs.length + ' messages found');
-
-      if(msgs.length > 0){
-        master += '===== CHAT '+(i+1)+': '+title+' =====\n\n';
-        for(var j=0; j<msgs.length; j++){
-          master += msgs[j].role + ':\n' + msgs[j].text + '\n\n';
-        }
-        master += '\n';
-        count++;
-      }
-    }
-
-    if(count){
-      download('mimo-all-chats.txt', master);
-      log('\nExported '+count+' chats successfully!','lime');
-    } else {
-      log('\nNo messages parsed. Structural change detected.','red');
-    }
-
-  } else {
-    log('Single chat mode running...');
-    var box = findScrollBox();
-    await scrollToTop(box);
-    var msgs = extractChat(box);
-    log('Messages grabbed: ' + msgs.length);
-
-    if(msgs.length){
-      var txt = '===== SINGLE CHAT EXPORT =====\n\n';
-      for(var j=0; j<msgs.length; j++){
-        txt += msgs[j].role + ':\n' + msgs[j].text + '\n\n';
-      }
-      download('mimo-chat.txt', txt);
-    } else {
-      log('\nNo messages found inside container view.','red');
-    }
-  }
-}
-
-main().catch(function(e){
-  log('Error: '+e.message,'red');
+main().catch(function(e) {
+  log("Fatal Engine Break: " + e.message, "red");
 });
 
 })();
